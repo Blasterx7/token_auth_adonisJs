@@ -18,18 +18,22 @@ export default class AuthController {
         }
     }
 
-    /**
-     * Login the user with email and password
-     * 
-     * @param {HttpContext} ctx - The HTTP context
-     * @returns {Promise<{ message: string; user?: User }>} - The login response
-     */
-    async login({ request }: HttpContext): Promise<{ message: string; user?: User; token?: { type: string; value: string } }> {
+    async login({ auth, request }: HttpContext) {
+        
+        if (auth.isAuthenticated) {
+            return {
+                message: 'Already logged in',
+                user: auth.user,
+                token: {
+                    type: 'bearer',
+                    value: auth.user?.currentAccessToken?.value,
+                }
+            }
+        }
+
         const { email, password } = request.only(['email', 'password'])
 
         const user = await User.verifyCredentials(email, password)
-
-        console.log(user);
 
         if (!user) {
             return {
