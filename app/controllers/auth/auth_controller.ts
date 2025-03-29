@@ -19,15 +19,14 @@ export default class AuthController {
     }
 
     async login({ auth, request }: HttpContext) {
-        
+        // Check if the user is already authenticated
+        await auth.check()
+
+        // Check if the user is already authenticated
         if (auth.isAuthenticated) {
             return {
                 message: 'Already logged in',
                 user: auth.user,
-                token: {
-                    type: 'bearer',
-                    value: auth.user?.currentAccessToken?.value,
-                }
             }
         }
 
@@ -42,7 +41,6 @@ export default class AuthController {
         }
 
         const token = await this.token(user)
-        console.log(token);
 
         return {
             message: 'Login successful',
