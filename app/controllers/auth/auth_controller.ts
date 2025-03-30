@@ -1,4 +1,5 @@
 import User from '#models/user'
+import { registerValidator } from '#validators/user';
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class AuthController {
@@ -50,7 +51,23 @@ export default class AuthController {
     }
     
     async register({ request } : HttpContext) {
+        request.validateUsing(registerValidator);
+        
         const { email, password } = request.only(['email', 'password'])
+
+        // try {
+            
+        //     registerValidator.validate({
+        //         email,
+        //         password,
+        //         confirmPassword
+        //     })
+        // } catch (error) {
+        //     return {
+        //         message: 'Error validating data',
+        //         error,
+        //     }
+        // }
 
         const user = await User.create({
             email,
