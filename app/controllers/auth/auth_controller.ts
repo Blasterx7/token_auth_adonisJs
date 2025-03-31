@@ -49,37 +49,30 @@ export default class AuthController {
             token,
         }
     }
-    
-    async register({ request } : HttpContext) {
-        request.validateUsing(registerValidator);
-        
-        const { email, password } = request.only(['email', 'password'])
 
-        // try {
-            
-        //     registerValidator.validate({
-        //         email,
-        //         password,
-        //         confirmPassword
-        //     })
-        // } catch (error) {
-        //     return {
-        //         message: 'Error validating data',
-        //         error,
-        //     }
-        // }
+    async register({ request }: HttpContext) {
+        try {
+            await request.validateUsing(registerValidator);
 
-        const user = await User.create({
-            email,
-            password,
-        })
+            const { email, password } = request.only(['email', 'password'])
 
-        const token = await this.token(user)
+            const user = await User.create({
+                email,
+                password,
+            })
 
-        return {
-            message: 'Registration successful',
-            user,
-            token,
+            const token = await this.token(user)
+
+            return {
+                message: 'Registration successful',
+                user,
+                token,
+            }
+        } catch (error) {
+            return {
+                message: 'Registration failed',
+                error: error.messages,
+            }
         }
     }
 }
