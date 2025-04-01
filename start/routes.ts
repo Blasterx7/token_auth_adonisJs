@@ -11,13 +11,6 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import AuthController from '#controllers/auth/auth_controller';
 
-// router.get('/', async () => {
-//   return {
-//     hello: 'world',
-//   }
-// })
-
-
 router.get('/', () => {
   return 'Hello world from the home page.'
 })
